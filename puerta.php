@@ -1,5 +1,5 @@
 <?php
-include_once(dirname(__DIR__).'/jskeletobk/strings.php');   
+include_once(dirname(__DIR__).'/jskeletobk/config.php');   
 
 function cors(){
     // Allow from any origin
@@ -45,42 +45,41 @@ function trataCuerpo(){
     return $json;
 }
 
+function manejaEvento($manejador, $event, $in){
+    if (isset($event)){
+        if (isset(($manejador))){
+            include_once($manejador['control'][0]);
+            $control = new $manejador['control'][1];
 
+            if (count($manejador['params'])>0){
+                foreach($manejador['params'] as $param){
+                    $$param = $in[$param];
+                    $params[$param] = $$param;
+                }
+            }
+
+            $out = (isset($params))?
+                $control -> $event($params):
+                $control -> $event();
+
+            return $out;
+        }
+    }
+    return -1;
+}
 
 cors();
 $in = trataCuerpo();
-$out;
 $event = $in['evt'];
+$manejador = $eventos[$event];
+$out = manejaEvento($manejador, $event, $in);
 
-if (!isset($event)){
+if ($out == -1){
     header("HTTP/1.1 400 Bad Request");
-    return;
-}
-else if (($event == 'ping' || $event == 'loga'|| $event == 'desloga') && count($in)==3){
-    include_once(LOGIN);
-    $loginControl = new LoginControl;
-
-    if ($event == 'ping'){
-        $out = $loginControl -> ping();
-    }
-    else if ($event == 'loga'){
-        $usr  = $in['usr'];
-        $pass = $in['pss'];
-        if (isset($usr, $pass)){
-            $out = $loginControl -> login($usr, $pass);
-        }
-        else{
-           header("HTTP/1.1 400 Bad Request"); 
-        }
-    }
-    else if ($event == 'desloga'){
-        $out = $loginControl -> logout();
-    }
 }
 else {
-    header("HTTP/1.1 404 Not Found");
+    header("Content-Type", "application/json");
+    echo json_encode($out);
 }
 
-header("Content-Type", "application/json");
-echo json_encode($out);
 return;

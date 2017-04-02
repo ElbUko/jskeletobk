@@ -7,9 +7,8 @@ class LoginControl {
 	//MODELO SALIDA
 	private $r;
 	function __construct(){
-		$r = [
+		$this->r = [
 	        "login"     => false,
-	        "invitado"  => false,
 	        "user"      => "",
 	        "popup"     => false,
 	        "popupMsg"  => ""
@@ -17,55 +16,61 @@ class LoginControl {
 	}
 
 	//METODOS
-	function logout(){
-		$r['popup'] = false;
-		$r['invitado'] = true;
-		$r['user'] = logout();
-		return $r;
+	function desloga(){
+		$sesion = new Sesion();
+		$this->r['user'] = $sesion->cierra_sesion();
+		return $this->r;
 	}
 
 	function ping(){
-		creaSesion();
-		if (hayUsuario()){
-			$r["user"] = usuarioLogado();
-			$r["login"] = true;
-		}
-		else {
-		    $r["user"] = creaInvitado();
-		 	$r["invitado"] = true;
-		}
-		return $r;
+		$sesion = new Sesion();
+		$sesion->abre_sesion();
+		$this->r["user"] = $sesion->usuario_logado();
+		$this->r["login"] = !$sesion->es_invitado();
+		return $this->r;
 	}
 
-	function login($usr, $pass){
-		$registros = findUsers($usr);
-		if (count($registros) == 0) {
-			//Creacion nuevo usuario
-			$nuevo_id = meteUsuario($usr,$pass);
-			if ($nuevo_id != 0) {
-				$r['login'] = true;
-				$r['popupMsg'] = "Bienvenido a Juegoskeleto!";
+	function loga($in){
+		$usr = $in['usr'];
+		$pass = $in['pss'];
+		
+		if (isset($usr, $pass)){
+			$registros = findUsers($usr);
+			if (count($registros) == 0) {
+				//Creacion nuevo usuario
+				$id = meteUsuario($usr,$pass);
+				if ($id != 0) {
+					$this->r['login'] = true;
+					$this->r['popup'] = true;
+					$this->r['popupMsg'] = "Bienvenido a Juegoskeleto!";
+				}
+				else {
+					$this->r['popup'] = true;
+					$this->r['popupMsg'] = "Hubo un problema en la insercion en nuestra base de datos";	
+				}
 			}
 			else {
-				$r['popupMsg'] = "Hubo un problema en la insercion en nuestra base de datos";	
+				//Comprobacion contraseña
+				if (($pass == $registros[0]['password'])){
+					$this->r['login'] = true;
+					$id = $registros[0]['id'];
+				}
+				else {
+					$this->r['popup'] = true;
+					$this->r['popupMsg'] = "El usuario existe y esta no es la clave guardada";
+				}
 			}
+			
+			if ($this->r['login']){
+				$this->r["user"] = $usr;
+				$sesion = new Sesion();
+				$sesion->loga($id);
+			}
+			return $this->r;
 		}
 		else {
-			//Comprobacion contraseña
-			if (($pass == $registros[0]['password'])){
-				$r['login'] = true;
-				$r['popup'] = false;
-			}
-			else {
-				$r['popupMsg'] = "El usuario existe y esta no es la clave guardada";
-			}
+			return -1;
 		}
-		
-		if ($r['login']){
-			$r["user"] = $usr;
-			login($usr);
-		}
-		return $r;		
 	}
 }
 
