@@ -2,7 +2,7 @@
 
 
 //FICHEROS
-$home = dirname(__DIR__).'/jskeletobk';
+$home = dirname(__DIR__);
 
 define('CONTADOR',		$home."/contador.txt");
 define('LOGIN',			$home."/control/login.php");
@@ -17,11 +17,11 @@ $eventos = [
 		"params"  => []
 	],
 	"loga" => [
-		"control" => [LOGIN, "LoginControl"],
+		"control" => [LOGIN, 'LoginControl'],
 		"params"  => ["usr", "pss"]
 	],
 	"desloga" => [
-		"control" => [LOGIN, "LoginControl"],
+		"control" => [LOGIN, 'LoginControl'],
 		"params"  => []
 	]
 ];

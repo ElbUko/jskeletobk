@@ -1,5 +1,5 @@
 <?php
-include_once(dirname(__DIR__).'/jskeletobk/config.php');   
+include_once(dirname(__DIR__).'/config.php');   
 
 function cors(){
     // Allow from any origin
@@ -47,7 +47,7 @@ function trataCuerpo(){
 
 function manejaEvento($manejador, $event, $in){
     if (isset($event)){
-        if (isset(($manejador))){
+        if (isset($manejador)){
             include_once($manejador['control'][0]);
             $control = new $manejador['control'][1];
 
