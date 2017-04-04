@@ -1,5 +1,5 @@
 <?php
-include_once(dirname(__DIR__).'/config.php');   
+include_once(dirname(__DIR__).'/public_html/config.php');   
 
 function cors(){
     // Allow from any origin
@@ -78,7 +78,7 @@ if ($out == -1){
     header("HTTP/1.1 400 Bad Request");
 }
 else {
-    header("Content-Type", "application/json");
+    header('Content-Type: application/json');
     echo json_encode($out);
 }
 

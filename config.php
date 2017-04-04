@@ -2,7 +2,7 @@
 
 
 //FICHEROS
-$home = dirname(__DIR__);
+$home = dirname(__DIR__).'/public_html';
 
 define('CONTADOR',		$home."/contador.txt");
 define('LOGIN',			$home."/control/login.php");

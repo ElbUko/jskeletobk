@@ -4,7 +4,7 @@ class Sesion {
     function abre_sesion(){
         session_start();
         if (!isset($_SESSION['usuario'])){
-            $this -> crea_invitado();
+            $_SESSION['usuario'] = $this -> crea_invitado();
         }
         return;
     }
