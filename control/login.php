@@ -7,7 +7,7 @@ class LoginControl {
 	//MODELO SALIDA
 	private $r;
 	function __construct(){
-		$this->r = [
+		$this -> r = [
 	        "login"     => false,
 	        "user"      => "",
 	        "popup"     => false,
@@ -18,15 +18,15 @@ class LoginControl {
 	//METODOS
 	function desloga(){
 		$sesion = new Sesion();
-		$this->r['user'] = $sesion->cierra_sesion();
+		$this -> r['user'] = $sesion -> cierra_sesion();
 		return $this->r;
 	}
 
 	function ping(){
 		$sesion = new Sesion();
-		$sesion->abre_sesion();
-		$this->r["user"] = $sesion->usuario_logado();
-		$this->r["login"] = !$sesion->es_invitado();
+		$sesion -> abre_sesion();
+		$this -> r["user"] = $sesion -> usuario_logado();
+		$this -> r["login"] = !$sesion -> es_invitado();
 		return $this->r;
 	}
 
@@ -40,37 +40,50 @@ class LoginControl {
 				//Creacion nuevo usuario
 				$id = meteUsuario($usr,$pass);
 				if ($id != 0) {
-					$this->r['login'] = true;
-					$this->r['popup'] = true;
-					$this->r['popupMsg'] = "Bienvenido a Juegoskeleto!";
-				}
-				else {
-					$this->r['popup'] = true;
-					$this->r['popupMsg'] = "Hubo un problema en la insercion en nuestra base de datos";	
+					cargaRespuestaNuevoUsuario();
+				} else {
+					cargaRespuestaError();
 				}
 			}
 			else {
 				//Comprobacion contraseña
-				if (($pass == $registros[0]['password'])){
-					$this->r['login'] = true;
-					$id = $registros[0]['id'];
-				}
-				else {
-					$this->r['popup'] = true;
-					$this->r['popupMsg'] = "El usuario existe y esta no es la clave guardada";
+			    if (($pass == $registros[0]['password'])){
+			        $id = $registros[0]['id'];
+				    cargaRespuestaOk();
+				} else {
+				    cargaRespuestaPasswdError();
 				}
 			}
 			
-			if ($this->r['login']){
-				$this->r["user"] = $usr;
+			if ($this -> r['login']){
+				$this -> r["user"] = $usr;
 				$sesion = new Sesion();
-				$sesion->loga($id);
+				$sesion -> loga($id);
 			}
 			return $this->r;
 		}
 		else {
 			return -1;
 		}
+	}
+	
+	function cargaRespuestaNuevoUsuario(){
+	    $this->r['login'] = true;
+	    $this->r['popup'] = true;
+	    $this->r['popupMsg'] = "¡Bienvenida a Juegoskeleto!";
+	}
+	function  cargaRespuestaError(){
+	    $this->r['popup'] = true;
+	    $this->r['popupMsg'] = "Hubo un problema en la insercion en nuestra base de datos";	
+	}
+	function cargaRespuestaOk($registros){
+	    $this->r['login'] = true;
+	    $this->r['popup'] = true;
+	    $this->r['popupMsg'] = "¡Me alegra tu vuelta!";
+	}
+	function cargaRespuestaPasswdError(){
+	    $this->r['popup'] = true;
+	    $this->r['popupMsg'] = "Este nombre existe y esta no es la clave guardada";
 	}
 }
 
