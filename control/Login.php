@@ -8,11 +8,13 @@ include_once(SESION);
 class LoginControl {
 
 	private $usr;
-	private $psswd;
+	private $pass;
+	private $sesion;
 	private $loginValido;
 	private $respuesta;
 	
 	function __construct(){
+        $this->sesion = new Sesion();
 	    $this->respuesta = [
 	        "login"     => false,
 	        "user"      => "",
@@ -50,14 +52,14 @@ class LoginControl {
 	}
 	
 	
-	private function cargaParametrosDeLogin(){
+	private function cargaParametrosDeLogin($in){
 	    $usr = $in[Literal::PARAM_USR];
 	    $pass = $in[Literal::PARAM_PSSWD];
 	    if (!isset($usr, $pass)){
 	        return -1;
 	    }
         $this->usr = $usr;
-        $this->psswd = $pass;
+        $this->pass = $pass;
 	}
 
 	
@@ -66,9 +68,10 @@ class LoginControl {
 	 * Saber si hay alguien ya logado o se trata de un invitado 
 	 */
 	public function ping(){
-	    $sesion = new Sesion();
-	    $sesion->abre_sesion();
-	    $this->cargaRespuestaDeEstado(!$sesion->es_invitado(), $sesion->usuario_logado());
+	    $this->sesion->abre_sesion();
+	    $this->cargaRespuestaDeEstado(
+	        !$this->sesion->es_invitado(), 
+	        $this->sesion->usuario_logado());
 		return $this->respuesta;
 	}
 	
@@ -82,17 +85,19 @@ class LoginControl {
 	 * @param el array de parametros
 	 */
 	public function loga($in){
-	    $this->cargaParametrosDeLogin();
+	    if ($this->sesion->estaLogado()){
+	        return -1;
+	    }
+	    $this->cargaParametrosDeLogin($in);
 	    $registros = findUsers($this->usr);
         if (count($registros) == 1){
-            $id = $this->compruebaUsuario($usr, $pass, $registros);
+            $id = $this->compruebaUsuario($registros);
         } else {
-            $id = $this->trataCrearUsuario($usr, $pass);
+            $id = $this->trataCrearUsuario();
         }
         
         if ($this->loginValido){
-            $sesion = new Sesion();
-            $sesion->loga($id);
+            $this->sesion->loga($id);
         }
         return $this->respuesta;
 	}
@@ -102,14 +107,14 @@ class LoginControl {
 	    if ($this->pass == $registros[0]['password']){
 	        $id = $registros[0]['id'];
 	        $this->cargaRespuestaLoginOk();
+    	    return $id;
 	    } else {
 	        $this->cargaRespuestaPasswdError();
 	    }
-	    return $id;
 	}
 	
-	function trataCrearUsuario($usr, $pass){
-	    $id = meteUsuario($usr,$pass);
+	function trataCrearUsuario(){
+	    $id = meteUsuario($this->usr,$this->pass);
 	    if ($id != 0) {
 	        $this->cargaRespuestaNuevoUsuario();
 	    } else {
@@ -124,8 +129,7 @@ class LoginControl {
 	 * Genera un nuevo invitado
 	 */
 	public function desloga(){
-	    $sesion = new Sesion();
-	    $idInvitado = $sesion->cierra_sesion();
+	    $idInvitado = $this->sesion->cierra_sesion();
 	    $this->cargaRespuestaLogout($idInvitado);
         return $this->respuesta;
 	}
