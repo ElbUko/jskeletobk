@@ -1,12 +1,19 @@
 <?php
 
+namespace servicios;
+
 class Sesion {
     function abre_sesion(){
         session_start();
-        if (!isset($_SESSION['usuario'])){
-            $_SESSION['usuario'] = $this -> crea_invitado();
+        if (!$this->estaLogado()){
+            $_SESSION['usuario'] = -1;
+            $this -> crea_invitado();
         }
         return;
+    }
+    
+    function estaLogado(){
+        return isset($_SESSION['usuario']);
     }
 
     function cierra_sesion(){
@@ -44,7 +51,7 @@ class Sesion {
         }
         fwrite($recurso, $nuevo_contenido);
         fclose($recurso);
-        $usuarioInvitado = "invitado".$nuevo_contenido;
+        $usuarioInvitado = 'invitado'.$nuevo_contenido;
         $_SESSION['invitado'] = $usuarioInvitado;
         return $usuarioInvitado;
     }

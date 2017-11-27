@@ -1,4 +1,5 @@
 <?php
+use servicios\Sesion;
 use util\Literal;
 
 include_once(CONSULTAS);
@@ -106,7 +107,7 @@ class LoginControl {
 	function compruebaUsuario($registros){
 	    if ($this->pass == $registros[0]['password']){
 	        $id = $registros[0]['id'];
-	        $this->cargaRespuestaLoginOk();
+	        $this->cargaRespuestaLoginOk($id);
     	    return $id;
 	    } else {
 	        $this->cargaRespuestaPasswdError();
