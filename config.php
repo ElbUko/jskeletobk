@@ -1,15 +1,15 @@
 <?php
 
-
 //FICHEROS
 $home = dirname(__DIR__).'/public_html';
 
 define('CONTADOR',		$home."/contador.txt");
+define('CONFIG',		$home."/config.php");
 define('LITERAL',		$home."/util/Literal.php");
 define('LOGIN',			$home."/control/Login.php");
 define('PACMAN_LEVELS',	$home."/control/pacmanUsrLevel.php");
 define('SESION', 		$home.'/servicios/Sesion.php');
-define('CONSULTAS', 	$home.'/php/dao/consultas.php');
+define('CONSULTAS', 	$home.'/php/dao/Consultas.php');
 
 
 $eventos = [
