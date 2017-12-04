@@ -1,5 +1,6 @@
 <?php
-include_once(dirname(__DIR__).'/public_html/config.php');   
+define('home', dirname(__DIR__).'/jskeletobk');
+include_once(home.'/Config.php');
 
 function cors(){
     // Allow from any origin
@@ -41,7 +42,6 @@ function trataCuerpo(){
         header("HTTP/1.1 400 Bad Request");
         throw new Exception('cuerpo no parseable');
     }
-
     return $json;
 }
 
@@ -71,7 +71,8 @@ function manejaEvento($manejador, $event, $in){
 cors();
 $in = trataCuerpo();
 $event = $in['evt'];
-$manejador = $eventos[$event];
+//$config = new Config();
+$manejador = Config::eventos[$event];
 $out = manejaEvento($manejador, $event, $in);
 
 if ($out == -1){

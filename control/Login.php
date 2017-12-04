@@ -2,20 +2,22 @@
 use servicios\Sesion;
 use util\Literal;
 
-include_once(CONSULTAS);
-include_once(LITERAL);
-include_once(SESION);
+include_once(Config::consultas);
+include_once(Config::literal);
+include_once(Config::sesion);
 
 class LoginControl {
 
 	private $usr;
 	private $pass;
 	private $sesion;
+	private $consultas;
 	private $loginValido;
 	private $respuesta;
 	
 	function __construct(){
         $this->sesion = new Sesion();
+        $this->consultas = new Consultas();
 	    $this->respuesta = [
 	        "login"     => false,
 	        "user"      => "",
@@ -90,7 +92,7 @@ class LoginControl {
 	        return -1;
 	    }
 	    $this->cargaParametrosDeLogin($in);
-	    $registros = findUsers($this->usr);
+	    $registros = $this->consultas->findUsers($this->usr);
         if (count($registros) == 1){
             $id = $this->compruebaUsuario($registros);
         } else {
@@ -115,7 +117,7 @@ class LoginControl {
 	}
 	
 	function trataCrearUsuario(){
-	    $id = meteUsuario($this->usr,$this->pass);
+	    $id = $this->consultas->meteUsuario($this->usr,$this->pass);
 	    if ($id != 0) {
 	        $this->cargaRespuestaNuevoUsuario();
 	    } else {

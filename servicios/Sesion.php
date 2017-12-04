@@ -39,7 +39,7 @@ class Sesion {
     }
 
     private function crea_invitado(){
-        $archivo = CONTADOR;
+        $archivo = \Config::contador;
         $recurso = fopen($archivo, "r+");
         $bytes_totales = filesize($archivo);
         $contador = fread($recurso, $bytes_totales);
