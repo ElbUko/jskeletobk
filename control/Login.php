@@ -3,9 +3,9 @@ use dao\Consultas;
 use servicios\Sesion;
 use util\Literal;
 
-include_once(Config::consultas);
-include_once(Config::literal);
-include_once(Config::sesion);
+include_once(Config::CONSULTAS);
+include_once(Config::LITERAL);
+include_once(Config::SESION);
 
 class LoginControl {
 

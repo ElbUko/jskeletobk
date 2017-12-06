@@ -3,7 +3,7 @@
 namespace servicios;
 
 class Sesion {
-    function abre_sesion(){
+    public function abre_sesion(){
         session_start();
         if (!$this->estaLogado()){
             $_SESSION['usuario'] = -1;
@@ -12,34 +12,34 @@ class Sesion {
         return;
     }
     
-    function estaLogado(){
+    public function estaLogado(){
         return isset($_SESSION['usuario']);
     }
 
-    function cierra_sesion(){
+    public function cierra_sesion(){
         session_start();
         $usr = $this -> crea_invitado();
         $_SESSION['usuario'] = -1;
         return $usr;
     }
 
-    function usuario_logado(){
+    public function usuario_logado(){
         return ($this->es_invitado())?
             $_SESSION['invitado']:
             $_SESSION['usuario'];
     }
 
-    function es_invitado(){
+    public function es_invitado(){
         return ($_SESSION['usuario']==-1);
     }
 
-    function loga($id){
+    public function loga($id){
         session_start();
         $_SESSION['usuario'] = $id;
     }
 
     private function crea_invitado(){
-        $archivo = \Config::contador;
+        $archivo = \Config::CONTADOR;
         $recurso = fopen($archivo, "r+");
         $bytes_totales = filesize($archivo);
         $contador = fread($recurso, $bytes_totales);

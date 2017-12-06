@@ -2,6 +2,7 @@
 namespace dao;
 
 use Config;
+use modelo\PacmanPantalla;
 
 class Consultas {
     private $host;
@@ -11,10 +12,10 @@ class Consultas {
     
     public function __construct(){
         new Config();
-        $this->host = Config::host;
-        $this->root = Config::root;
-        $this->clave = Config::clave;
-        $this->db = Config::db;
+        $this->host = Config::HOST;
+        $this->root = Config::ROOT;
+        $this->clave = Config::CLAVE;
+        $this->db = Config::DB;
     }
     
     private function abreConexion(){
@@ -24,8 +25,15 @@ class Consultas {
         }
         return $mysqli;        
     }
+    private function ejecutaCierraYDevuelveNuevoId($mysqli, $pre){
+        $pre->execute();
+        $nuevo_id = $pre->insert_id;
+        $pre->close();
+        $mysqli->close();
+        return $nuevo_id;
+    }
     
-    public function findUsers($usr){
+    public function findUsers(String $usr){
         $sql = "SELECT * FROM usuarios where username like ?";
         $mysqli = $this->abreConexion();
         $pre = $mysqli->prepare($sql);
@@ -44,16 +52,25 @@ class Consultas {
         return $registros;
     }
     
-    function meteUsuario($usr, $pass){
+    public function meteUsuario(String $usr, String $pass){
         $sql = "INSERT INTO usuarios (username, password) VALUES (?, ?)";
         $mysqli = $this->abreConexion();
         $pre = $mysqli->prepare($sql);
         $pre->bind_param("ss", $usr, $pass);
-        $pre->execute();
-        $nuevo_id = $pre->insert_id;
-        $pre->close();
-        $mysqli->close();
-        return $nuevo_id;
+        return $this->ejecutaCierraYDevuelveNuevoId($mysqli, $pre);
+    }
+    
+    public function metePantalla(PacmanPantalla $pacTalla){
+        $sql = "INSERT INTO pacPantallasUsr (nombre, usuario, columnas, filas, mapadata) VALUES (?, ?, ?, ?, ?)";
+        $mysqli = $this->abreConexion();
+        $pre = $mysqli->prepare($sql);
+        $pre->bind_param("ssiis", 
+            $pacTalla->getNombre(), 
+            $pacTalla->getUsuario(), 
+            $pacTalla->getColumnas(), 
+            $pacTalla->getFilas(), 
+            $pacTalla->getMapaData());
+        return $this->ejecutaCierraYDevuelveNuevoId($mysqli, $pre);
     }
 }
 

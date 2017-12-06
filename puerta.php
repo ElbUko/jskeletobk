@@ -1,6 +1,7 @@
 <?php
 define('home', dirname(__DIR__).'/jskeletobk');
 include_once(home.'/Config.php');
+include_once(Config::LITERAL);
 
 function cors(){
     // Allow from any origin
@@ -45,8 +46,10 @@ function trataCuerpo(){
     return $json;
 }
 
-function manejaEvento($manejador, $event, $in){
+function manejaEvento($in){
+    $event = $in['evt'];
     if (isset($event)){
+        $manejador = Config::EVENTOS[$event];
         if (isset($manejador)){
             include_once($manejador['control'][0]);
             $control = new $manejador['control'][1];
@@ -68,17 +71,13 @@ function manejaEvento($manejador, $event, $in){
     return -1;
 }
 
-cors();
+// cors();
 $in = trataCuerpo();
-$event = $in['evt'];
-//$config = new Config();
-$manejador = Config::eventos[$event];
-$out = manejaEvento($manejador, $event, $in);
+$out = manejaEvento($in);
 
 if ($out == -1){
     header("HTTP/1.1 400 Bad Request");
-}
-else {
+} else {
     header('Content-Type: application/json');
     echo json_encode($out);
 }

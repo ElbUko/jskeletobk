@@ -190,11 +190,11 @@ function borraPantalla($id, $nombre){
 }
 /*
 create table pacPantallasUsr(
-    -> id int(11) not null auto_increment primary key,
-    -> pantalla varchar(600) not null,
-    -> usuario varchar(25) not null,
-    -> columnas int(3) not null,
-    -> ciclico boolean,
-    -> puntuacion int(3));
+     id int(11) not null auto_increment primary key,
+     nombre varchar(25) not null,
+     usuario varchar(25) not null,
+     columnas int(2) not null,
+     filas int(2) not null,
+     pantalla varchar(600) not null);
 */
 ?>

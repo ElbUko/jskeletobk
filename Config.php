@@ -1,31 +1,52 @@
 <?php
 
+use util\Literal;
+
+// use util\Literal;
+
 class Config {
-    const contador =    home."/contador.txt";
-    const config =      home."/config.php";
-    const literal =     home."/util/Literal.php";
-    const login =       home."/control/Login.php";
-    const sesion =      home.'/servicios/Sesion.php';
-    const consultas =   home.'/dao/Consultas.php';
+    const CONFIG =      home.'/config.php';
+    const LITERAL =     home.'/util/Literal.php';
+    const LOGIN =       home.'/control/Login.php';
+    const PACMANCTRL =  home.'/control/PacmanPantallasCtrl.php';
+    const SESION =      home.'/servicios/Sesion.php';
+    const PACMANSRV =   home.'/control/PacmanPantallasSrv.php';
+    const CONSULTAS =   home.'/dao/Consultas.php';
+    const PACMUSRIMAG = home.'/img/pacmanUsrs/';
+    const CONTADOR =    home.'/contador.txt';
     
-    const eventos = [
-        "ping" =>  [
-            "control" => [Config::login, "LoginControl"],
-            "params"  => []
+    
+    const EVENTOS = [
+        'ping' =>  [
+            'control' => [Config::LOGIN, 'LoginControl'],
+            'params'  => []
         ],
-        "loga" => [
-            "control" => [Config::login, 'LoginControl'],
-            "params"  => ["usr", "pss"]
+        'loga' => [
+            'control' => [Config::LOGIN, 'LoginControl'],
+            'params'  => [
+                Literal::PARAM_USR, 
+                Literal::PARAM_PSSWD
+            ]
         ],
-        "desloga" => [
-            "control" => [Config::login, 'LoginControl'],
-            "params"  => []
+        'desloga' => [
+            'control' => [Config::LOGIN, 'LoginControl'],
+            'params'  => []
+        ],
+        'pacMapaNuevo' => [
+            'control' => [Config::PACMANCTRL, 'PacmanPantallasCtrl'],
+            'params'  => [
+                Literal::PARAM_NOMBRE,
+                Literal::PARAM_FILAS,
+                Literal::PARAM_COLUMNAS,
+                Literal::PARAM_MAPA_MAPADATA,
+                Literal::PARAM_IMG_DATA
+            ]
         ]
     ];
-    const host = 'localhost';
-    const root = 'root';
-    const clave = 'bukobuko';
-    const db = 'prueba1';
+    const HOST = 'localhost';
+    const ROOT = 'root';
+    const CLAVE = 'bukobuko';
+    const DB = 'prueba1';
 }
 
 ?>
