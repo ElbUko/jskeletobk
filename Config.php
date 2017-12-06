@@ -6,7 +6,7 @@ class Config {
     const literal =     home."/util/Literal.php";
     const login =       home."/control/Login.php";
     const sesion =      home.'/servicios/Sesion.php';
-    const consultas =   home.'/php/dao/consultas.php';
+    const consultas =   home.'/dao/Consultas.php';
     
     const eventos = [
         "ping" =>  [
@@ -22,6 +22,10 @@ class Config {
             "params"  => []
         ]
     ];
+    const host = 'localhost';
+    const root = 'root';
+    const clave = 'bukobuko';
+    const db = 'prueba1';
 }
 
 ?>

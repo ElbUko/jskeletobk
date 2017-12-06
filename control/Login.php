@@ -1,4 +1,5 @@
 <?php
+use dao\Consultas;
 use servicios\Sesion;
 use util\Literal;
 
@@ -36,13 +37,13 @@ class LoginControl {
 	private function  cargaRespuestaDeEstado($login, $usr){
 	    $this->cargaRespuesta($login, $usr, false, "");
 	}
-	private function cargaRespuestaNuevoUsuario($usr){
+	private function cargaRespuestaNuevoUsuario(){
 	    $this->loginValido = true;
-	    $this->cargaRespuesta(true, $usr, true, Literal::MSG_BIENVENIDA_PRIMERA);
+	    $this->cargaRespuesta(true, $this->usr, true, Literal::MSG_BIENVENIDA_PRIMERA);
 	}
 	private function cargaRespuestaLoginOk($usr){
 	    $this->loginValido = true;
-	    $this->cargaRespuesta(true, $usr, true, Literal::MSG_BIENVENIDA_LOGIN);
+	    $this->cargaRespuesta(true, $this->usr, true, Literal::MSG_BIENVENIDA_LOGIN);
 	}
 	private function cargaRespuestaPasswdError(){
 	    $this->cargaRespuesta(false, "", true, Literal::MSG_PASSWORD_ERRONEO);
@@ -93,20 +94,19 @@ class LoginControl {
 	    }
 	    $this->cargaParametrosDeLogin($in);
 	    $registros = $this->consultas->findUsers($this->usr);
-        if (count($registros) == 1){
-            $id = $this->compruebaUsuario($registros);
-        } else {
+	    if ($registros==null){
             $id = $this->trataCrearUsuario();
-        }
+	    } else {
+            $id = $this->compruebaUsuario($registros);
+	    }
         
         if ($this->loginValido){
             $this->sesion->loga($id);
         }
         return $this->respuesta;
-	}
+	}	
 	
-	
-	function compruebaUsuario($registros){
+	private function compruebaUsuario($registros){
 	    if ($this->pass == $registros[0]['password']){
 	        $id = $registros[0]['id'];
 	        $this->cargaRespuestaLoginOk($id);
@@ -116,7 +116,7 @@ class LoginControl {
 	    }
 	}
 	
-	function trataCrearUsuario(){
+	private function trataCrearUsuario(){
 	    $id = $this->consultas->meteUsuario($this->usr,$this->pass);
 	    if ($id != 0) {
 	        $this->cargaRespuestaNuevoUsuario();
