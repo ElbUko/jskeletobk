@@ -9,7 +9,7 @@ class Literal
     const PARAM_USR = 'usr';
     const PARAM_PSSWD = 'pss';
     const PARAM_IMG_DATA = 'imgdata';
-    const PARAM_MAPA_MAPADATA = 'mapadata';
+    const PARAM_MAPADATA = 'mapadata';
     const PARAM_NOMBRE = 'nombre';
     const PARAM_FILAS = 'filas';
     const PARAM_COLUMNAS = 'columnas';

@@ -71,7 +71,7 @@ function manejaEvento($in){
     return -1;
 }
 
-// cors();
+cors();
 $in = trataCuerpo();
 $out = manejaEvento($in);
 

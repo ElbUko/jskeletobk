@@ -2,42 +2,38 @@
 
 namespace servicios;
 
+use util\Literal;
+
 class Sesion {
-    public function abre_sesion(){
-        session_start();
-        if (!$this->estaLogado()){
-            $_SESSION['usuario'] = -1;
-            $this -> crea_invitado();
-        }
-        return;
-    }
     
+    function __construct(){
+        session_start();
+        if ($this->esNueva()){
+            $this->setInvitado($this->crea_invitado());
+        }
+    }    
+    public function esNueva(){
+        return !isset($_SESSION[Literal::SES_INVITADO]);
+    }
     public function estaLogado(){
-        return isset($_SESSION['usuario']);
+        return isset($_SESSION[Literal::SES_USUARIO])
+        && $_SESSION[Literal::SES_USUARIO] != -1;
     }
-
-    public function cierra_sesion(){
-        session_start();
-        $usr = $this -> crea_invitado();
-        $_SESSION['usuario'] = -1;
-        return $usr;
+    public function loga($nombreUsuario){
+        $_SESSION[Literal::SES_USUARIO] = $nombreUsuario;
     }
-
-    public function usuario_logado(){
-        return ($this->es_invitado())?
-            $_SESSION['invitado']:
-            $_SESSION['usuario'];
+    public function desloga(){
+        $_SESSION[Literal::SES_USUARIO] = -1;
     }
-
-    public function es_invitado(){
-        return ($_SESSION['usuario']==-1);
+    public function getUsuarioLogado(){
+        return $_SESSION[Literal::SES_USUARIO];
     }
-
-    public function loga($id){
-        session_start();
-        $_SESSION['usuario'] = $id;
+    public function getInvitado(){
+        return $_SESSION[Literal::SES_INVITADO];
     }
-
+    public function setInvitado($numeroInvitado){
+        $_SESSION[Literal::SES_INVITADO] = $numeroInvitado;
+    }
     private function crea_invitado(){
         $archivo = \Config::CONTADOR;
         $recurso = fopen($archivo, "r+");
@@ -51,9 +47,7 @@ class Sesion {
         }
         fwrite($recurso, $nuevo_contenido);
         fclose($recurso);
-        $usuarioInvitado = 'invitado'.$nuevo_contenido;
-        $_SESSION['invitado'] = $usuarioInvitado;
-        return $usuarioInvitado;
+        return 'invitado'.$nuevo_contenido;
     }
 }
 ?>

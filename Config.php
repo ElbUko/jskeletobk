@@ -38,7 +38,7 @@ class Config {
                 Literal::PARAM_NOMBRE,
                 Literal::PARAM_FILAS,
                 Literal::PARAM_COLUMNAS,
-                Literal::PARAM_MAPA_MAPADATA,
+                Literal::PARAM_MAPADATA,
                 Literal::PARAM_IMG_DATA
             ]
         ]

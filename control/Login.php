@@ -10,6 +10,7 @@ include_once(Config::SESION);
 class LoginControl {
 
 	private $usr;
+	private $invitado;
 	private $pass;
 	private $sesion;
 	private $consultas;
@@ -18,6 +19,7 @@ class LoginControl {
 	
 	function __construct(){
         $this->sesion = new Sesion();
+        $this->invitado = $this->sesion->getInvitado();
         $this->consultas = new Consultas();
 	    $this->respuesta = [
 	        "login"     => false,
@@ -25,8 +27,7 @@ class LoginControl {
 	        "popup"     => false,
 	        "popupMsg"  => ""
 	    ];
-	}
-	
+	}	
 	
 	private function cargaRespuesta($login, $usr, $popup, $popupMsg){
 	    $this->respuesta['login'] = $login;
@@ -34,37 +35,29 @@ class LoginControl {
 	    $this->respuesta['popup'] = $popup;
 	    $this->respuesta['popupMsg'] = $popupMsg;	    
 	}
-	private function  cargaRespuestaDeEstado($login, $usr){
-	    $this->cargaRespuesta($login, $usr, false, "");
+	
+	private function cargaRespuestaPingLogado(){
+	    $this->cargaRespuesta(true, $this->usr, false, "");
+	}
+	private function cargaRespuestaPingNoLogado(){
+	    $this->cargaRespuesta(false, $this->invitado, false, "");
 	}
 	private function cargaRespuestaNuevoUsuario(){
-	    $this->loginValido = true;
 	    $this->cargaRespuesta(true, $this->usr, true, Literal::MSG_BIENVENIDA_PRIMERA);
 	}
-	private function cargaRespuestaLoginOk($usr){
-	    $this->loginValido = true;
+	private function cargaRespuestaLoginOk(){
 	    $this->cargaRespuesta(true, $this->usr, true, Literal::MSG_BIENVENIDA_LOGIN);
 	}
 	private function cargaRespuestaPasswdError(){
-	    $this->cargaRespuesta(false, "", true, Literal::MSG_PASSWORD_ERRONEO);
+	    $this->cargaRespuesta(false, $this->invitado, true, Literal::MSG_PASSWORD_ERRONEO);
 	}
-	private function  cargaRespuestaError(){
-	    $this->cargaRespuesta(false, "", true, Literal::MSG_ERROR_BBDD);
+	private function cargaRespuestaError(){
+	    $this->cargaRespuesta(false, $this->invitado, true, Literal::MSG_ERROR_BBDD);
 	}
-	private function  cargaRespuestaLogout($invitado){
-	    $this->cargaRespuesta(false, $invitado, true, Literal::MSG_HASTA_PRONTO);
+	private function cargaRespuestaLogout(){
+	    $this->cargaRespuesta(false, $this->invitado, true, Literal::MSG_HASTA_PRONTO);
 	}
 	
-	
-	private function cargaParametrosDeLogin($in){
-	    $usr = $in[Literal::PARAM_USR];
-	    $pass = $in[Literal::PARAM_PSSWD];
-	    if (!isset($usr, $pass)){
-	        return -1;
-	    }
-        $this->usr = $usr;
-        $this->pass = $pass;
-	}
 
 	
 	/**
@@ -72,14 +65,16 @@ class LoginControl {
 	 * Saber si hay alguien ya logado o se trata de un invitado 
 	 */
 	public function ping(){
-	    $this->sesion->abre_sesion();
-	    $this->cargaRespuestaDeEstado(
-	        !$this->sesion->es_invitado(), 
-	        $this->sesion->usuario_logado());
+	    if ($this->sesion->estaLogado()){
+	        $this->usr = $this->sesion->getUsuarioLogado();
+	        $this->cargaRespuestaPingLogado();
+	    } else {
+    	    $this->cargaRespuestaPingNoLogado(); 
+	    } 
 		return $this->respuesta;
 	}
 	
-	
+	   
 	/**
 	 * Function usada para el login. Casos: 
 	 *     1) nuevo usuario (sign in)  
@@ -95,46 +90,59 @@ class LoginControl {
 	    $this->cargaParametrosDeLogin($in);
 	    $registros = $this->consultas->findUsers($this->usr);
 	    if ($registros==null){
-            $id = $this->trataCrearUsuario();
+            $this->trataCrearUsuario();
 	    } else {
-            $id = $this->compruebaUsuario($registros);
+            $this->compruebaUsuario($registros);
 	    }
         
         if ($this->loginValido){
-            $this->sesion->loga($id);
+            $this->sesion->loga($this->usr);
         }
         return $this->respuesta;
 	}	
 	
+	private function cargaParametrosDeLogin($in){
+	    $usr = $in[Literal::PARAM_USR];
+	    $pass = $in[Literal::PARAM_PSSWD];
+	    if (!isset($usr, $pass)){
+	        return -1;
+	    }
+        $this->usr = $usr;
+        $this->pass = $pass;
+	}
+
+	private function trataCrearUsuario(){
+	    $id = $this->consultas->meteUsuario($this->usr,$this->pass);
+	    if ($id != 0) {
+	        $this->loginValido = true;
+	        $this->cargaRespuestaNuevoUsuario();
+	    } else {
+	        $this->cargaRespuestaError();
+	    }
+	}
+	
 	private function compruebaUsuario($registros){
 	    if ($this->pass == $registros[0]['password']){
-	        $id = $registros[0]['id'];
-	        $this->cargaRespuestaLoginOk($id);
+	        $this->loginValido = true;
+	        $this->cargaRespuestaLoginOk();
     	    return $id;
 	    } else {
 	        $this->cargaRespuestaPasswdError();
 	    }
 	}
-	
-	private function trataCrearUsuario(){
-	    $id = $this->consultas->meteUsuario($this->usr,$this->pass);
-	    if ($id != 0) {
-	        $this->cargaRespuestaNuevoUsuario();
-	    } else {
-	        $this->cargaRespuestaError();
-	    }
-	    return $id;
-	}
-	
+		
 	
 	/**
 	 * Funcion para cerrar sesion. 
 	 * Genera un nuevo invitado
 	 */
 	public function desloga(){
-	    $idInvitado = $this->sesion->cierra_sesion();
-	    $this->cargaRespuestaLogout($idInvitado);
-        return $this->respuesta;
+	    if ($this->sesion->estaLogado()){
+            $this->cargaRespuestaLogout();
+            $this->sesion->desloga();
+            return $this->respuesta;
+	    }
+        return -1;
 	}
 
 }
