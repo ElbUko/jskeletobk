@@ -32,7 +32,7 @@ class Config {
             'control' => [Config::LOGIN, 'LoginControl'],
             'params'  => []
         ],
-        'pacMapaNuevo' => [
+        'pacAltaMapa' => [
             'control' => [Config::PACMANCTRL, 'PacmanPantallasCtrl'],
             'params'  => [
                 Literal::PARAM_NOMBRE,

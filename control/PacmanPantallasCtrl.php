@@ -15,6 +15,7 @@ class PacmanPantallasCtrl{
     private $filas;
     private $columnas;
     private $usuario;
+    private $sesion;
     
     function __construct(){
         $this->sesion = new Sesion();
@@ -39,8 +40,11 @@ class PacmanPantallasCtrl{
     }
     
     private function cargaUsuarioLogado(){
-        $sesion = new Sesion();
-        $this->usuario = $sesion->usuario_logado();
+        if ($this->sesion->estaLogado()){
+            $this->usuario = $this->sesion->getUsuarioLogado();            
+        } else {
+            $this->usuario = $this->sesion->getInvitado();            
+        }
     }
     private function trataImagenSubida(){
         //TODO - seguridad a imagen
