@@ -9,11 +9,12 @@ class Config {
     const LITERAL =     home.'/util/Literal.php';
     const LOGIN =       home.'/control/Login.php';
     const PACMANCTRL =  home.'/control/PacmanPantallasCtrl.php';
+    const CREAIMG =     home.'/data/pacmanPantallasUsrs/CreaGuardaImagen.php';
+    const CONTADOR =    home.'/data/contador.txt';
     const SESION =      home.'/servicios/Sesion.php';
-    const PACMANSRV =   home.'/control/PacmanPantallasSrv.php';
+    const PACMANSRV =   home.'/servicios/PacmanPantallasSrv.php';
     const CONSULTAS =   home.'/dao/Consultas.php';
     const PACMUSRIMAG = home.'/img/pacmanUsrs/';
-    const CONTADOR =    home.'/contador.txt';
     
     
     const EVENTOS = [

@@ -1,12 +1,11 @@
 <?php
 
-use dao\Consultas;
 use servicios\Sesion;
 use util\Literal;
 
-include_once(Config::CONSULTAS);
 include_once(Config::LITERAL);
 include_once(Config::SESION);
+include_once(Config::CREAIMG);
 
 class PacmanPantallasCtrl{
     private $imgData;
@@ -19,7 +18,6 @@ class PacmanPantallasCtrl{
     
     function __construct(){
         $this->sesion = new Sesion();
-        $this->consultas = new Consultas();
     }
     
     private function cargaParametros($in){
@@ -50,10 +48,13 @@ class PacmanPantallasCtrl{
         //TODO - seguridad a imagen
         return base64_decode(substr($this->imgData,22));
     }
-    public function pacMapaNuevo($in){
+    public function pacAltaMapa($in){
         $this->cargaParametros($in);
+        $this->
         $this->cargaUsuarioLogado();
-        return ['ok'=>$this->nombre, 'id'=>$this->usuario];
+        $creaImg = new CreaGuardaImagen($this->nombre, 10*$this->columnas, 10*$this->filas);
+        $cadena = $creaImg->deBase64($this->imgData);
+        return ['ok'=>$this->nombre, 'id'=>$cadena];
         //$this->usuario.' '.$this->columnas.' '.$this->nombre.' '.$this->filas;
         
     } 
