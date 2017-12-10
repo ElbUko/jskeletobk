@@ -1,7 +1,9 @@
 <?php
 namespace dao;
 
-class Usuarios extends \Consultas
+include_once(\Config::CONSULTAS);
+
+class TblUsuarios extends Consultas
 {    
     public function findUsers(String $usr){
         $sql = "SELECT * FROM usuarios where username like ?";
@@ -32,3 +34,4 @@ class Usuarios extends \Consultas
     
 }
 
+?>

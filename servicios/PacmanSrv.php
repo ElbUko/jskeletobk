@@ -1,26 +1,45 @@
 <?php
 
+use servicios\Sesion;
+use modelo\PacmanPantalla;
+
+include_once(Config::SESION);
+include_once(Config::BEANPACPANT);
+include_once(Config::TBLPACPANUSR);
+
 class PacmanSrv {
-   private $consultas;
+   private $tblPantallasDao;
+   private $sesion;
+   private $pacmanPantalla;
    
    function __construct(){
-       $this->consultas = new Consultas();
+       $this->tblPantallasDao = new TblPacPantallasUsr();
+       $this->sesion = new Sesion();
+       $this->pacmanPantalla = new PacmanPantalla();
    }
    
-   public function compruebaNombre(){
-       $this->consultas
+   public function nombreNuevo($nombre){
+       $this->pacmanPantalla->setNombre($nombre);
+       $numReg = $this->tblPantallasDao->cuentaNombre($nombre);
+       return $numReg == 0;           
    }
    
-   public function guardaMapa(){
-       $this->cargaUsuarioLogado();
+   public function guardaMapa($mapadata, $filas, $columnas){
+       $this->pacmanPantalla->setUsuario($this->cargaUsuarioLogado());
+       $this->pacmanPantalla->setFilas($filas);
+       $this->pacmanPantalla->setColumnas($columnas);
+       $this->pacmanPantalla->setMapaData($mapadata);
+       $this->tblPantallasDao->metePantalla($this->pacmanPantalla);
    }
    
    private function cargaUsuarioLogado(){
+       $usr = '';
        if ($this->sesion->estaLogado()){
-           $this->usuario = $this->sesion->getUsuarioLogado();
+           $usr = $this->sesion->getUsuarioLogado();
        } else {
-           $this->usuario = $this->sesion->getInvitado();
+           $usr = $this->usuario = $this->sesion->getInvitado();
        }
+       return $usr;
    }
 }
 

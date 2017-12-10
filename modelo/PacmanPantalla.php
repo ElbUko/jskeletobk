@@ -9,12 +9,15 @@ class PacmanPantalla
     private $columnas;
     private $mapaData;
 
-    public function __construct($nombre, $usuario, $filas, $columnas, $mapadata){
-        $this->nombre = $nombre;
-        $this->usuario = $usuario;
-        $this->filas = $filas;
-        $this->columnas = $columnas;
-        $this->mapadata = $mapadata;
+    public function __construct(){}
+    public static function conParametros($nombre, $usuario, $filas, $columnas, $mapadata){
+        $obj = new PacmanPantalla();
+        $obj->nombre = $nombre;
+        $obj->usuario = $usuario;
+        $obj->filas = $filas;
+        $obj->columnas = $columnas;
+        $obj->mapadata = $mapadata;
+        return $obj;
     }
     
     public function getNombre(){

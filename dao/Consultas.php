@@ -2,7 +2,6 @@
 namespace dao;
 
 use Config;
-use modelo\PacmanPantalla;
 
 class Consultas {
     private $host;
@@ -34,3 +33,4 @@ class Consultas {
     }
 }
 
+?>

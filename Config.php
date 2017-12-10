@@ -11,10 +11,12 @@ class Config {
     const PACMANCTRL =  home.'/control/PacmanPantallasCtrl.php';
     const CREAIMG =     home.'/data/pacmanPantallasUsrs/CreaGuardaImagen.php';
     const CONTADOR =    home.'/data/contador.txt';
+    const BEANPACPANT = home.'/modelo/PacmanPantalla.php';
     const SESION =      home.'/servicios/Sesion.php';
-    const PACMANSRV =   home.'/servicios/PacmanPantallasSrv.php';
+    const PACMANSRV =   home.'/servicios/PacmanSrv.php';
     const CONSULTAS =   home.'/dao/Consultas.php';
-    const PACMUSRIMAG = home.'/img/pacmanUsrs/';
+    const TBLUSR =      home.'/dao/TblUsuarios.php';
+    const TBLPACPANUSR =home.'/dao/TblPacPantallasUsr.php';
     
     
     const EVENTOS = [

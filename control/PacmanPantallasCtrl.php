@@ -1,11 +1,10 @@
 <?php
 
-use servicios\Sesion;
 use util\Literal;
 
-include_once(Config::LITERAL);
-include_once(Config::SESION);
 include_once(Config::CREAIMG);
+include_once(Config::LITERAL);
+include_once(Config::PACMANSRV);
 
 class PacmanPantallasCtrl{
     private $imgData;
@@ -13,11 +12,10 @@ class PacmanPantallasCtrl{
     private $nombre;
     private $filas;
     private $columnas;
-    private $usuario;
-    private $sesion;
+    private $pacmanSrv;
     
     function __construct(){
-        $this->sesion = new Sesion();
+        $this->pacmanSrv = new PacmanSrv();
     }
     
     private function cargaParametros($in){
@@ -36,26 +34,17 @@ class PacmanPantallasCtrl{
         $this->filas;
         $this->columnas;
     }
-    
-    private function cargaUsuarioLogado(){
-        if ($this->sesion->estaLogado()){
-            $this->usuario = $this->sesion->getUsuarioLogado();            
-        } else {
-            $this->usuario = $this->sesion->getInvitado();            
-        }
-    }
     private function trataImagenSubida(){
         //TODO - seguridad a imagen
         return base64_decode(substr($this->imgData,22));
     }
     public function pacAltaMapa($in){
         $this->cargaParametros($in);
-        $this->
-        $this->cargaUsuarioLogado();
-        $creaImg = new CreaGuardaImagen($this->nombre, 10*$this->columnas, 10*$this->filas);
-        $cadena = $creaImg->deBase64($this->imgData);
-        return ['ok'=>$this->nombre, 'id'=>$cadena];
-        //$this->usuario.' '.$this->columnas.' '.$this->nombre.' '.$this->filas;
+        if ($this->pacmanSrv->nombreNuevo($this->nombre)){
+            $this->pacmanSrv->guardaMapa($this->mapadata, $this->filas, $this->columnas);
+            $creaImg = new CreaGuardaImagen($this->nombre, 10*$this->columnas, 10*$this->filas);
+            $cadena = $creaImg->deBase64($this->imgData);
+        }
         
     } 
 }

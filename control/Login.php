@@ -1,11 +1,11 @@
 <?php
-use dao\Consultas;
+use dao\TblUsuarios;
 use servicios\Sesion;
 use util\Literal;
 
-include_once(Config::CONSULTAS);
 include_once(Config::LITERAL);
 include_once(Config::SESION);
+include_once(Config::TBLUSR);
 
 class LoginControl {
 
@@ -13,14 +13,14 @@ class LoginControl {
 	private $invitado;
 	private $pass;
 	private $sesion;
-	private $consultas;
+	private $tblUsusarios;
 	private $loginValido;
 	private $respuesta;
 	
 	function __construct(){
-        $this->sesion = new Sesion();
+        $this->sesion= new Sesion();
         $this->invitado = $this->sesion->getInvitado();
-        $this->consultas = new Consultas();
+        $this->tblUsusarios = new TblUsuarios();
 	    $this->respuesta = [
 	        "login"     => false,
 	        "user"      => "",
@@ -88,7 +88,7 @@ class LoginControl {
 	        return -1;
 	    }
 	    $this->cargaParametrosDeLogin($in);
-	    $registros = $this->consultas->findUsers($this->usr);
+	    $registros = $this->tblUsusarios->findUsers($this->usr);
 	    if ($registros==null){
             $this->trataCrearUsuario();
 	    } else {
@@ -112,7 +112,8 @@ class LoginControl {
 	}
 
 	private function trataCrearUsuario(){
-	    $id = $this->consultas->meteUsuario($this->usr,$this->pass);
+	    $pass = password_hash($this->pass, PASSWORD_BCRYPT);
+	    $id = $this->tblUsusarios->meteUsuario($this->usr,$pass);
 	    if ($id != 0) {
 	        $this->loginValido = true;
 	        $this->cargaRespuestaNuevoUsuario();
@@ -122,10 +123,9 @@ class LoginControl {
 	}
 	
 	private function compruebaUsuario($registros){
-	    if ($this->pass == $registros[0]['password']){
+	    if (password_verify($this->pass, $registros[0]['password'])){
 	        $this->loginValido = true;
 	        $this->cargaRespuestaLoginOk();
-    	    return $id;
 	    } else {
 	        $this->cargaRespuestaPasswdError();
 	    }
