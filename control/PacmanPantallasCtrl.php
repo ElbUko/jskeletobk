@@ -45,8 +45,10 @@ class PacmanPantallasCtrl{
             $creaImg = new CreaGuardaImagen($this->nombre, 10*$this->columnas, 10*$this->filas);
             $cadena = $creaImg->deBase64($this->imgData);
         }
-        
-    } 
+    }
+    public function pacListaMapas(){
+        return $this->pacmanSrv->listaMapas();
+    }
 }
 
 ?>

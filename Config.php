@@ -44,6 +44,10 @@ class Config {
                 Literal::PARAM_MAPADATA,
                 Literal::PARAM_IMG_DATA
             ]
+        ],
+        'pacListaMapas' => [
+            'control' => [Config::PACMANCTRL, 'PacmanPantallasCtrl'],
+            'params'  => []
         ]
     ];
     const HOST = 'localhost';

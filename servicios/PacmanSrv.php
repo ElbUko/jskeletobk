@@ -32,6 +32,10 @@ class PacmanSrv {
        $this->tblPantallasDao->metePantalla($this->pacmanPantalla);
    }
    
+   public function listaMapas(){
+       return $this->tblPantallasDao->damePantallas();
+   }
+   
    private function cargaUsuarioLogado(){
        $usr = '';
        if ($this->sesion->estaLogado()){

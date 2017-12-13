@@ -36,6 +36,14 @@ class TblPacPantallasUsr extends Consultas
             $pacTalla->getMapaData());
         return $this->insertaCierraYDevuelveNuevoId($mysqli, $pre);
     }
+    
+    public function damePantallas(){
+        $sql = 'SELECT * FROM pacPantallasUsr';
+        //TODO -meter puntuacion y estado en pantallas
+        $mysqli = $this->abreConexion();
+        $res = $mysqli->query($sql);
+        return $res->fetch_all(MYSQLI_ASSOC);
+    }
 }
 
 ?>

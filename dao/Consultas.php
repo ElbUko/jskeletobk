@@ -15,6 +15,7 @@ class Consultas {
         $this->root = Config::ROOT;
         $this->clave = Config::CLAVE;
         $this->db = Config::DB;
+        //TODO - meter aqui el abrir conexion y crear el destructor cerrandola
     }
     
     protected function abreConexion(){
