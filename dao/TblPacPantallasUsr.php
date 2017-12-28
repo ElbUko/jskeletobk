@@ -28,12 +28,13 @@ class TblPacPantallasUsr extends Consultas
         $sql = 'INSERT INTO pacPantallasUsr (nombre, usuario, columnas, filas, pantalla) VALUES (?, ?, ?, ?, ?)';
         $mysqli = $this->abreConexion();
         $pre = $mysqli->prepare($sql);
-        $pre->bind_param('ssiis',
-            $pacTalla->getNombre(),
-            $pacTalla->getUsuario(),
-            $pacTalla->getColumnas(),
-            $pacTalla->getFilas(),
-            $pacTalla->getMapaData());
+        $nombre = $pacTalla->getNombre();
+        $usuario = $pacTalla->getUsuario();
+        $columnas = $pacTalla->getColumnas();
+        //TODO -meter fecha del insert en la tabla
+        $filas = $pacTalla->getFilas();
+        $mapaData = $pacTalla->getMapaData();
+        $pre->bind_param('ssiis', $nombre, $usuario, $columnas, $filas, $mapaData);
         return $this->insertaCierraYDevuelveNuevoId($mysqli, $pre);
     }
     

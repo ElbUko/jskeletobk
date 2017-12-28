@@ -13,17 +13,22 @@ class CreaGuardaImagen {
     }
     
     public function deBase64($cadena){
-        $cadenaDecoded = base64_decode($cadena);
-        $imgEnMemoria = imagecreatefromstring($cadenaDecoded);
-        if ($imgEnMemoria !== false){
-            header('Content-Type: image/png');
-            imagepng($imgEnMemoria);
-            $nuevaImg = imagecreatetruecolor($this->ancho, $this->alto);
-            imagecopy($nuevaImg, $imgEnMemoria, 0,0,0,0, $this->ancho, $this->alto);
-            imagepng($nuevaImg, $this->nombre);            //El directorio esta en $nombreComp
-            imagedestroy($nuevaImg);
-            imagedestroy($imgEnMemoria);
+        $muletilla = 'data:image/png;base64,';
+        if (strpos($cadena, $muletilla) == 0){
+            $cadenaDecoded = base64_decode(substr($cadena, strlen($muletilla)));
+            $imgEnMemoria = imagecreatefromstring($cadenaDecoded);
+            if ($imgEnMemoria !== false){
+                header('Content-Type: image/png');
+                imagepng($imgEnMemoria);
+                $nuevaImg = imagecreatetruecolor($this->ancho, $this->alto);
+                imagecopy($nuevaImg, $imgEnMemoria, 0,0,0,0, $this->ancho, $this->alto);
+                imagepng($nuevaImg, $this->nombre);            //El directorio esta en $nombreComp
+                imagedestroy($nuevaImg);
+                imagedestroy($imgEnMemoria);
+                return true;
+            }
         }
+        return false;
     }
 }
 

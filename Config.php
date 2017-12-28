@@ -48,6 +48,10 @@ class Config {
         'pacListaMapas' => [
             'control' => [Config::PACMANCTRL, 'PacmanPantallasCtrl'],
             'params'  => []
+        ],
+        'pacDameMapa' => [
+            'control' => [Config::PACMANCTRL, 'PacmanPantallasCtrl'],
+            'params'  => ['id']
         ]
     ];
     const HOST = 'localhost';
