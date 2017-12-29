@@ -29,7 +29,7 @@ class PacmanSrv {
        $this->pacmanPantalla->setFilas($filas);
        $this->pacmanPantalla->setColumnas($columnas);
        $this->pacmanPantalla->setMapaData($mapadata);
-       $this->tblPantallasDao->metePantalla($this->pacmanPantalla);
+       return $this->tblPantallasDao->metePantalla($this->pacmanPantalla);
    }
    
    public function listaMapas(){

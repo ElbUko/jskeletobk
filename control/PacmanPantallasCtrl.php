@@ -7,15 +7,22 @@ include_once(Config::LITERAL);
 include_once(Config::PACMANSRV);
 
 class PacmanPantallasCtrl{
+    private $id;
     private $imgData;
     private $mapadata;
     private $nombre;
     private $filas;
     private $columnas;
     private $pacmanSrv;
+    private $respuesta;
     
     function __construct(){
         $this->pacmanSrv = new PacmanSrv();
+        $this->respuesta = [
+            "ok"        => false,
+            "id"        => '',
+            "error"     => ''
+        ];
     }
     
     private function cargaParametros($in){
@@ -36,6 +43,19 @@ class PacmanPantallasCtrl{
         $this->columnas = $columnas;
         return 0;
     }
+    
+    private function cargaRespuesta($ok, $id, $error){
+        $this->respuesta['ok'] = $ok;
+        $this->respuesta['id'] = $id;
+        $this->respuesta['error'] = $error;
+    }
+    private function cargaRespuestaOk(){
+        $this->cargaRespuesta(true, $this->id, '');
+    }
+    private function cargaRespuestaError($error){
+        $this->cargaRespuesta(false, '', $error);
+    }
+    
     private function trataImagenSubida(){
         //TODO - seguridad a imagen
         return base64_decode(substr($this->imgData,22));
@@ -49,18 +69,22 @@ class PacmanPantallasCtrl{
             return -1;
         }
         if (!$this->nombreValido()){
-            //TODO - responde nombre no valido (o error y valida nombre igual en front)
+            $this->cargaRespuestaError('Nombre no valido');
         }
         if($this->pacmanSrv->nombreNuevo($this->nombre)){
             $creaImg = new CreaGuardaImagen($this->nombre, 10*$this->columnas, 10*$this->filas);
             if ($creaImg->deBase64($this->imgData)){
-                $this->pacmanSrv->guardaMapa($this->mapadata, $this->filas, $this->columnas);
-                //TODO - responde ok
-            } 
-            //TODO - responde KO
+                $this->id = $this->pacmanSrv->guardaMapa($this->mapadata, $this->filas, $this->columnas);
+                $this->cargaRespuestaOk();
+                //TODO - mirar caso no id (error al guardar)
+            } else {
+                $this->cargaRespuestaError('Imagen corrupta');
+            }
+            //TODO - mirar si guardar a pesar de no tener imagen
         } else {
-            //TODO - responde nombre existe
+            $this->cargaRespuestaError('Ya existe el nombre');
         }
+        return $this->respuesta;
     }
     public function pacListaMapas(){
         return $this->pacmanSrv->listaMapas();
