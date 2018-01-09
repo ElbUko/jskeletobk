@@ -30,6 +30,13 @@ class CreaGuardaImagen {
         }
         return false;
     }
+    
+    public function aBase64(String $nombre){
+        $nombre = $nombre.'.png';
+        $file = file_get_contents($nombre, true);
+        $muletilla = 'data:image/png;base64,';
+        return $muletilla.base64_encode($file);
+    }
 }
 
 ?>

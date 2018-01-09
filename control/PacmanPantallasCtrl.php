@@ -87,7 +87,15 @@ class PacmanPantallasCtrl{
         return $this->respuesta;
     }
     public function pacListaMapas(){
-        return $this->pacmanSrv->listaMapas();
+        $pantallas = $this->pacmanSrv->listaMapas();
+        $creaImg = new CreaGuardaImagen("", 0, 0);
+        $salida = array();
+        for ($i=0; $i<sizeof($pantallas); $i++){
+            $pantalla = $pantallas[$i];
+            $pantalla['img'] = $creaImg->aBase64($pantalla["nombre"]);
+            $salida[] = $pantalla;
+        }
+        return $salida;
     }
 }
 
