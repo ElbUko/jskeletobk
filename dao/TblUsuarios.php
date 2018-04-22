@@ -31,7 +31,13 @@ class TblUsuarios extends Consultas
         $pre->bind_param("ss", $usr, $pass);
         return $this->insertaCierraYDevuelveNuevoId($mysqli, $pre);
     }
-    
+    /*
+     * create table usuarios(
+     *      id int(7) not null auto_increment primary key, 
+     *      username varchar(20) not null, 
+     *      password varchar(50)
+     * ) engine=innodb;
+     */  
 }
 
 ?>
